@@ -78,12 +78,16 @@ class AdaSmooth(Optimizer):
                     state['st'] = torch.zeros_like(p, memory_format=torch.preserve_format)
                     state['nt'] = torch.zeros_like(p, memory_format=torch.preserve_format)
 
+                state['step'] += 1
+                if state['step'] == M+1:
+                    state['step'] = 0
+                    state['st'] = torch.zeros_like(p, memory_format=torch.preserve_format)
+                    state['nt'] = torch.zeros_like(p, memory_format=torch.preserve_format)
+                
                 norm_terms.append(state['norm_terms'])
                 xt.append(state['xt'])
                 st.append(state['st'])
                 nt.append(state['nt'])
-
-                state['step'] += 1
 
             adasmooth(params_with_grad,
                      grads,
@@ -95,8 +99,7 @@ class AdaSmooth(Optimizer):
                      p1=p1,
                      p2=p2,
                      eps=eps,
-                     weight_decay=weight_decay,
-                     M=M)
+                     weight_decay=weight_decay)
 
         return loss
 
@@ -107,16 +110,12 @@ def adasmooth(params: List[Tensor],
              xt: List[Tensor],
              st: List[Tensor],
              nt: List[Tensor],
-             *,
              lr: float,
              p1: float,
              p2: float,
              eps: float,
-             weight_decay: float,
-             M: float):
-    step = 0
+             weight_decay: float):
     for (param, grad, norm_term, x, s, n) in zip(params, grads, norm_terms, xt, st, nt):
-        step +=1
         if weight_decay != 0:
             grad = grad.add(param, alpha=weight_decay)
 
@@ -129,10 +128,8 @@ def adasmooth(params: List[Tensor],
         c = torch.add(torch.mul((p2 - p1), er), (1 - p2)) #8
         norm_term = torch.add(torch.mul(c ** 2, torch.mul(grad, grad)), torch.mul((1 - c ** 2), norm_term)) #9
         delta = torch.mul( 1/ torch.sqrt(torch.add(norm_term,eps)),grad) # 10
-        print()
+
         if torch.is_complex(param):
             delta = torch.view_as_complex(delta)
         param.add_(delta, alpha=-lr) # update
-    if step == M:
-        st = torch.zeros_like(p, memory_format=torch.preserve_format)
-        nt = torch.zeros_like(p, memory_format=torch.preserve_format)
+  
