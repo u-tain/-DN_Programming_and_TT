@@ -1,6 +1,7 @@
 ## Отчет
 ### Теоретическая часть
 #### Inception V3 
+![inceptionv3](https://production-media.paperswithcode.com/methods/inceptionv3onc--oview_vjAbOfw.png)
 [[1]](https://arxiv.org/abs/1512.00567v3)
 #### Оптимизаторы 
 Adam  
