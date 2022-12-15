@@ -6,4 +6,4 @@ Adam
 AdaSmooth
 ### Практическая часть
 ### Использованные источники
-[1][https://arxiv.org/abs/1512.00567v3]
+[1](https://arxiv.org/abs/1512.00567v3)
