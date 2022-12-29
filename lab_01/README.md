@@ -2,7 +2,8 @@
 ### Теоретическая часть
 #### Inception V3 
 ![inceptionv3](https://production-media.paperswithcode.com/methods/inceptionv3onc--oview_vjAbOfw.png)
-[[1]](https://arxiv.org/abs/1512.00567v3)
+
+Inception V3 [1] - сверточная нейронная сеть, особенностью которой является использование специальных Inception-блоков.
 #### Оптимизаторы 
 Adam  
 
